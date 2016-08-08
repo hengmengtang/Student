@@ -31,6 +31,6 @@ public class Student {
 	
 	@Override
 	public String toString() {
-		return "ID: " + id + "Name: " + name + "Sex: " + sex;
+		return "ID: " + id + ",Name: " + name + ",Sex: " + sex;
 	}
 }

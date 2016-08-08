@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import DTO.Student;
 import getConnection.dbConnection;
 
-public class getAllStudent {
+public class StudentControll {
 	static Connection con=dbConnection.getInstance().getConnection();;
 	static PreparedStatement pre;
 	static Statement st;
@@ -19,7 +19,7 @@ public class getAllStudent {
 	
 	public ArrayList<Student> getStudent(Student stu) {	
 		try {
-			String sql="SELECT * FROM tbstudent";
+			String sql="SELECT * FROM tbstudent ORDER BY id";
 			st=con.createStatement();
 			rs=st.executeQuery(sql);
 			while(rs.next()){
@@ -50,10 +50,10 @@ public class getAllStudent {
 	
 	public boolean updateStudent(Student stu) throws Exception {
 		String sql="UPDATE tbStudent SET name=?,sex=? WHERE id=?";
-		pre=con.prepareStatement(sql);
-		pre.setInt(1,stu.getId());
-		pre.setString(2, stu.getName());
-		pre.setString(3, stu.getSex());
+		pre=con.prepareStatement(sql);		
+		pre.setString(1, stu.getName());
+		pre.setString(2, stu.getSex());
+		pre.setInt(3,stu.getId());
 		int rowEffected=pre.executeUpdate();
 		
 		if(rowEffected>0)
@@ -76,15 +76,17 @@ public class getAllStudent {
 		return false;
 	}
 	
-	public boolean searchStudent(Student stu) throws SQLException{
-		String sql="SELECT * FROM Students WHERE id=?";
+	public String searchStudent(Student stu) throws SQLException{
+		String sql="SELECT * FROM tbstudent WHERE id=?";
 		pre=con.prepareStatement(sql);
 		pre.setInt(1,stu.getId());
-		int rowEffected=pre.executeUpdate();
+		rs=pre.executeQuery();		
+		while(rs.next()){			
+			stu.setId(rs.getInt("id"));
+			stu.setName(rs.getString("name"));
+			stu.setSex(rs.getString("sex"));
+		}
 		
-		if(rowEffected>0)
-			return true;
-		
-		return false;
+		return stu.toString();
 	}
 }
